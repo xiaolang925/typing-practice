@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!--项目开始-->
+    <modelVersion>4.0.0</modelVersion>
+    <!--modelVersion: Maven 配置格式的版本号，固定写4.0.0-->
+    <!--partent:继承Spring Boot官方父工程，好处是下面加依赖不用写版本号-->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.16</version>
+        <relativePath/>
+    </parent>
+
+    <!--groupId:组织唯一标识，惯例“公司域名倒过来写”,没域名就用com.example-->
+    <groupId>com.example</groupId>
+    <!--artifactId:项目自己的名字-->
+    <artifactId>typing-practice</artifactId>
+    <!--version:项目版本号；SNAPSHOT = 开发中的快照版-->
+    <version>0.0.1-SNAPSHOT</version>
+    <name>typing-practice</name>
+    <description>小朗的数字与符号打字练习网站</description>
+
+    <properties>
+    <!--properties:全局“占位符”区，里面定义的变量全项目通用-->
+        <java.version>17</java.version>
+        <!--java.version:告诉Maven用java 17编译运行-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--project.build.sourceEncoding:源码统一UTF-8 编码，中文注释不乱码-->
+    </properties>
+
+    <dependencies>
+    <!--dependencies:购物清单：里面每一个<dependency>是一个要借用的库-->
+
+        <!--第一个库 spring-boot-starter-web:装上它，项目就能当网站服务器（内嵌Tomcat)-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--第二个库 spring-boot-starter-test:测试工具全家桶-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <!--scope=test:这个库只在测试代码里用，不打进正式产物-->
+        </dependency>
+    </dependencies>
+    
+    <build>
+    <!--build:构建配置区-->
+        <plugins>
+        <!--这个插件把项目打成“可执行 jar”，以后java -jar就能跑-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
