@@ -1,0 +1,88 @@
+/*全局设置：*代表“所有元素”*/
+*{
+    box-sizing:border-box;    /*边框算进宽度里，布局更直观*/
+    margin:0;                 /*所有元素默认外边距清零*/
+    padding:0;                /*所有元素默认内边距清零*/
+}
+/*页面整体*/
+body {
+    background:#1e1e2e;             /*深紫色背景（打字网站常用深色？）*/
+    color:#cdd6f4;                  /*浅色文字*/
+    font-family:'Consolas','Courier New',monospace;  /*等宽字体，字符对齐好看*/
+    min-height:100vh;                 /*至少占满整个屏幕高度*/
+    display:flex;                     /*用弹性布局*/
+    align-items:center;               /*垂直居中*/
+    justify-content:center;           /*水平居中*/
+}
+
+/*最外层容器：限制宽度并居中*/
+.container {
+    width:90%;
+    max-width:800px;
+    text-align:center;                /*内部文字居中*/
+}
+
+/*标题*/
+h1{
+    font-size:1.6rem;                 /*字号1.6倍基准字号*/
+    margin-bottom:2rem;               /*下边距，和打字区隔开*/
+    color:#89b4fa;                  /*淡蓝色标题*/
+}
+
+/*打字区*/
+.typing-area {
+    font-size:2.2rem;                 /*字符要大，数字符号才看得清*/
+    line-height:2.4rem;
+    letter-spacing:2px;               /*字符间距，避免挤在一起*/
+    background:#11111b;             /*比背景更深，形成卡片感*/
+    border-radius:12px;               /*圆角*/
+    padding:1.8rem 2rem;              /*上下1.8rem 左右2rem的内边距*/
+    min-height:6.5rem;                /*最小高度，防止太矮*/
+    word-break:break-all;             /*超长时自动换行*/
+    outline:none;                     /*去掉点击时默认的蓝色外框*/
+    cursor:text;                      /*鼠标变成文本输入光标*/
+    user-select:none;                 /*禁止选中文字，防止打字时误选*/
+}
+
+/*已打过的字符：变灰淡出（JS会加.typed类）*/
+.typed {
+    color:#585b70;
+}
+
+/*当前要打的字符：蓝底高亮，相当于光标（JS会加.current类）*/
+.current {
+    background:#89b4fa;
+    color:#11111b;
+    border-radius:4px;
+}
+
+/*提示文字*/
+.hint {
+    margin-top:1.2rem;
+    color:#6c7086;
+    font-size:0.9rem;
+}
+
+.status {
+    margin-top:0.5rem;
+    color:#abadc8;
+    font-size:0.85rem;
+}
+
+/*重新生成按钮*/
+#restart-btn {
+    margin-top:1.5rem;
+    padding:0.6rem 1.5rem;
+    font-size:1rem;
+    font-family:inherit;          /*继承页面字体*/
+    background:#89b4fa;
+    color:#11111b;
+    border:none;                  /*去掉默认边框*/
+    border-radius:8px;
+    cursor:pointer;               /*鼠标变小手*/
+}
+
+/*鼠标悬停在按钮上时*/
+#restart-btn:hover {
+    background:#b4befe;
+}

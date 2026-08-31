@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--告诉浏览器：这是HTML5文档，这行固定放最顶上-->
+<html lang="zh-CN">
+<head>
+    <!--head区：放"关于页面"的信息，不直接显示在页面上-->
+    <meta charset="UTF-8">
+    <!--页面编码用UTF-8，中文才不会乱码-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--适配手机/平板屏幕，固定写法-->
+    <title>打字练习</title>
+    <!--浏览器标签页上显示的名字-->
+    <link rel="stylesheet" href="style.css">
+    <!--把样式表styless.css引进来，页面才会变好看-->
+</head>
+<body>
+    <!--body区：页面上真正显示的内容都写在这里-->
+    <div class="container">
+        <!--div是一个“容器”盒子，class是给他分组起名，方便CSS定位-->
+        <h1>数字·符号 打字练习</h1>
+        <!--hl是页面最大的一级标题-->
+
+        <!--打字区：JS会把每个字符包成一个span放进来，方便单独变色-->
+        <div id="typing-area" class="typing-area" tabindex="0"></div>
+        <!--id是给元素起“独一无二的名字”，JS靠document.getElementById找到他-->
+        <p class="hint">点击下方文字区域，直接敲键盘开始打字</p>
+        <!--p是段落文本-->
+        <p class="status" id="status">第一步：先能打字，判错和计分下一步加</p>
+        <!--这行文字以后会被JS动态改写，用来显示状态-->
+        <button id="restart-btn">重新生成</button>
+        <!--button是按钮，点击触发JS-->
+    </div>
+
+    <script src="script.js"></script>
+    <!--把JS脚本引进来，打字逻辑都在里面-->
+</body>
+</html>
