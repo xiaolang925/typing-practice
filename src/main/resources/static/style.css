@@ -55,6 +55,12 @@ h1{
     color:#11111b;
     border-radius:4px;
 }
+/*加入打错的字：红色显示，等用户退格删掉（JS会加.error类）*/
+.error{
+    background:#89b4fa;
+    color:#df2121;
+    border-radius:4px;
+}
 
 /*提示文字*/
 .hint {

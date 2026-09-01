@@ -7,6 +7,7 @@ const TARGET_LENGTH = 60;    //一行生成60字符
 let target = '';             //当前要打的目标内容（一个字符串）
 let cursor = 0;              //光标位置：正在打第几个字符（从0开始）
 let mode='digits';           //当前难度:digits纯数字/symbols纯符号/mixed混合(当前默认digits)
+let wrongChar = '';          //当前挂着的打错字，空字符串=没打错
 
 //界面元素：用id找到页面上的三个家伙
 const typingArea = document.getElementById('typing-area'); //打字区
@@ -41,7 +42,12 @@ function render(){
     typingArea.innerHTML = ''; //先清空打字区
     for(let i=0;i<target.length;i++){
         const span = document.createElement('span');  //造一个span元素
-        span.textContent = target[i];                 //放一个字符（用textContent防止XSS注入）
+        if(wrongChar !== ''&&i=== cursor){      //光标位置若挂着错字：显示打错的这个红字，顶替掉该打的字
+            span.textContent = wrongChar;
+            span.className = 'error';
+        }else{
+            span.textContent = target[i];   //否则显示该打的字
+        }
         typingArea.appendChild(span);
     }
     updateHighlight();
@@ -54,8 +60,8 @@ function updateHighlight(){
         spans[i].classList.remove('typed','current');  //先清理旧的类
         if(i<cursor){
             spans[i].classList.add('typed');          //已打过->变灰(.typed)            
-        }else if(i===cursor){
-            spans[i].classList.add('current');       //当前待打->高亮(.current)
+        }else if(i===cursor&&wrongChar ===''){
+            spans[i].classList.add('current');       //当前待打且没有错字->高亮(.current)
         }
     }
 }
@@ -64,20 +70,33 @@ function updateHighlight(){
 function handleKey(e) {
     //忽略带Ctrl/Alt/Meta的组合键，只处理普通字符
     if(e.ctrlKey ||e.metaKey||e.altKey)return;
-    if(e.key.length!==1) return;   //忽略退格，方向键等
+    //如果挂着打错的字，只能按退格删掉它，其他键一律不管
+    if(wrongChar!==''){
+        if(e.key==='Backspace'){
+            wrongChar='';
+            render();
+            statusEl.textContent = '删掉了，继续';
+        }
+        return;
+    }
+    if(e.key === 'Backspace')return; //没打错时，退格键不能删掉已经打对的字
+    if(e.key.length!==1) return;   //只处理普通字符键
     if(cursor >= target.length)return;//打完就不处理了
     if(e.key===target[cursor]){    //和题目当前要打的字符比一比
         cursor++;                  //对了:光标前进一格
         updateHighlight();
         statusEl.textContent = "对了，继续";
     }else{
-        statusEl.textContent ="错了，应该是"+ target[cursor]; //错了先给个提示
+        wrongChar = e.key;       //错了：把错误字亮出来
+        render();
+        statusEl.textContent = '打错了，按退格删掉';
     }
 }
 //重新开始：生成新题，光标归零，重画页面
 function restart(){
     target = generateTarget();
     cursor = 0;
+    wrongChar = '';     //换题时顺便清掉可能挂着的错误字
     statusEl.textContent = "开始吧";
     render();
 }
