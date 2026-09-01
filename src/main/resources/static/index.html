@@ -18,7 +18,12 @@
         <!--div是一个“容器”盒子，class是给他分组起名，方便CSS定位-->
         <h1>数字·符号 打字练习</h1>
         <!--hl是页面最大的一级标题-->
-
+        <!--难度切换：三个按钮，selected保证默认为纯数字，当前选中的会高亮-->
+        <div class="difficulty" id="difficulty">
+            <button id="btn-digits" class="diff-btn selected">纯数字</button>
+            <button id="btn-symbols" class="diff-btn">纯符号</button>
+            <button id="btn-mixed" class="diff-btn">混合</button>
+        </div>
         <!--打字区：JS会把每个字符包成一个span放进来，方便单独变色-->
         <div id="typing-area" class="typing-area" tabindex="0"></div>
         <!--id是给元素起“独一无二的名字”，JS靠document.getElementById找到他-->

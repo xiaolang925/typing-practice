@@ -6,22 +6,32 @@ const TARGET_LENGTH = 60;    //一行生成60字符
 
 let target = '';             //当前要打的目标内容（一个字符串）
 let cursor = 0;              //光标位置：正在打第几个字符（从0开始）
+let mode='digits';           //当前难度:digits纯数字/symbols纯符号/mixed混合(当前默认digits)
 
 //界面元素：用id找到页面上的三个家伙
 const typingArea = document.getElementById('typing-area'); //打字区
 const statusEl = document.getElementById('status');         //状态文字
 const restartBtn = document.getElementById('restart-btn');  //重新生成按钮
+const btnDigits = document.getElementById('btn-digits');    //难度按钮：纯数字
+const btnSymbols = document.getElementById('btn-symbols');  //难度按钮：纯符号
+const btnMixed = document.getElementById('btn-mixed');    //难度按钮：混合
 
 //从pool里随机挑一个字符
 function randomChar(pool){
     return pool[Math.floor(Math.random()*pool.length)];
 }
 
-//生成一行目标内容：数字和符号各50%随机混（难度选项下一步加）
+//生成一行目标内容：根据当前难度决定从哪个池子抽
 function generateTarget(){
     let result = '';
     for(let i=0;i<TARGET_LENGTH;i++){
-        result +=Math.random()<0.5?randomChar(DIGITS):randomChar(SYMBOLS);
+        if(mode==='digits'){
+            result += randomChar(DIGITS);   //纯数字
+        }else if(mode==='symbols'){
+            result += randomChar(SYMBOLS);  //纯符号
+        }else{
+            result +=Math.random()<0.5?randomChar(DIGITS):randomChar(SYMBOLS);  //混合：数字符号各半
+        }
     }
     return result;
 }
@@ -71,6 +81,28 @@ function restart(){
     statusEl.textContent = "开始吧";
     render();
 }
+//难度切换
+//点按钮切换难度：换mode、换高亮、重新生成一题
+function setMode(newMode){
+    mode=newMode;
+    //先把所有按钮高亮去掉，再单独点亮选中的那个
+    btnDigits.classList.remove('selected');
+    btnSymbols.classList.remove('selected');
+    btnMixed.classList.remove('selected');
+    if(mode==='digits'){
+        btnDigits.classList.add('selected');
+    }else if(mode === 'symbols'){
+        btnSymbols.classList.add('selected');
+    }else{
+        btnMixed.classList.add('selected');
+    }
+    restart();
+}
+//三个难度按钮：点哪个就切到哪个难度
+btnDigits.addEventListener('click',function() { setMode('digits');});
+btnSymbols.addEventListener('click',function(){ setMode('symbols');});
+btnMixed.addEventListener('click',function(){ setMode('mixed');});
+
 //把事件连起来：
 //1.打字区收到按键->交给handleKey
 typingArea.addEventListener('keydown',handleKey);

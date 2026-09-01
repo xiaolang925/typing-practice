@@ -65,7 +65,7 @@ h1{
 
 .status {
     margin-top:0.5rem;
-    color:#abadc8;
+    color:#a6adc8;
     font-size:0.85rem;
 }
 
@@ -85,4 +85,36 @@ h1{
 /*鼠标悬停在按钮上时*/
 #restart-btn:hover {
     background:#b4befe;
+}
+
+/*难度按钮区:；一排按钮水平居中排列*/
+.difficulty {
+    display:flex;             /*横着排*/
+    justify-content:center;   /*水平居中*/
+    gap:0.8rem;               /*按钮之间留空隙*/
+    margin-bottom:1.5rem;     /*和下面的打字区隔开*/
+}
+
+/*难度按钮(未选中)*/
+.diff-btn{
+    padding:0.5rem 1.4rem;
+    font-size:1rem;
+    font-family:inherit;
+    background:#11111b;    /*深色卡片底*/
+    color:#cdd6f4;
+    border:1px solid #45475a;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/*鼠标悬停在难度按钮上*/
+.diff-btn:hover{
+    border-color:#89b4fa;  /*边框变主题蓝，暗示可以点*/
+}
+
+/*当前选中的难度按钮：主题蓝填充*/
+.diff-btn.selected{
+    background:#89b4fa;
+    color:#11111b;
+    border-color:#89b4fa;
 }
