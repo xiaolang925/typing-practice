@@ -8,6 +8,10 @@ let target = '';             //当前要打的目标内容（一个字符串）
 let cursor = 0;              //光标位置：正在打第几个字符（从0开始）
 let mode='digits';           //当前难度:digits纯数字/symbols纯符号/mixed混合(当前默认digits)
 let wrongChar = '';          //当前挂着的打错字，空字符串=没打错
+let roundStart = 0;          //本局开始打字的时刻（第一次按键才记，0=还没开始
+let roundResults = [];       //每完成一局，把成绩存进来（以后喂AI分析用）
+let totalKeys = 0;           //这一局按了多少次“打字键”（对错都算）
+let correctKeys = 0;         //这一局打对了多少次
 
 //界面元素：用id找到页面上的三个家伙
 const typingArea = document.getElementById('typing-area'); //打字区
@@ -82,10 +86,22 @@ function handleKey(e) {
     if(e.key === 'Backspace')return; //没打错时，退格键不能删掉已经打对的字
     if(e.key.length!==1) return;   //只处理普通字符键
     if(cursor >= target.length)return;//打完就不处理了
+    if(roundStart === 0)roundStart = Date.now();
+    totalKeys++;
     if(e.key===target[cursor]){    //和题目当前要打的字符比一比
+        correctKeys++;             //对了，对键数加1
         cursor++;                  //对了:光标前进一格
         updateHighlight();
-        statusEl.textContent = "对了，继续";
+        if(cursor===target.length){              //全部打完了，记录这局的成绩
+            const timeMs=Date.now()-roundStart;  //用了多久
+            const sec = (timeMs /1000).toFixed(1); //换算成秒，保留一位小数
+            const cpm = Math.round(target.length / (timeMs/60000)); //每分钟多少字
+            const accuracy = Math.round(correctKeys/totalKeys*100);  //准确率（百分数）
+            roundResults.push({mode:mode,timeMs:timeMs,cpm:cpm,accuracy:accuracy,time:new Date().toISOString()});
+            statusEl.textContent = '完成！用时 '+sec+' 秒 · CPM '+cpm+' ·准确率 '+accuracy+' %';
+        }else{
+            statusEl.textContent = "对了，继续";
+        }
     }else{
         wrongChar = e.key;       //错了：把错误字亮出来
         render();
@@ -97,6 +113,10 @@ function restart(){
     target = generateTarget();
     cursor = 0;
     wrongChar = '';     //换题时顺便清掉可能挂着的错误字
+    roundStart = 0;     //新的一局，秒表归零
+    totalKey = 0;       //按键计数归零
+    correctKeys = 0;    //对键计数归零
+
     statusEl.textContent = "开始吧";
     render();
 }
