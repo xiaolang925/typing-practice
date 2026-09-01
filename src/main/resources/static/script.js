@@ -114,7 +114,7 @@ function restart(){
     cursor = 0;
     wrongChar = '';     //换题时顺便清掉可能挂着的错误字
     roundStart = 0;     //新的一局，秒表归零
-    totalKey = 0;       //按键计数归零
+    totalKeys = 0;       //按键计数归零
     correctKeys = 0;    //对键计数归零
 
     statusEl.textContent = "开始吧";
