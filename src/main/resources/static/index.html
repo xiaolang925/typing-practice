@@ -34,7 +34,43 @@
         <button id="restart-btn">重新生成</button>
         <!--button是按钮，点击触发JS-->
     </div>
-
+    <!--成绩界面：默认藏起来，打完一局后JS把它显示出来-->
+    <div class="overlay" id="result-overlay">
+        <!--成绩卡片：里面大字号显示各种成绩-->
+        <div class="result-card">
+            <!--难度：放在卡片最上面-->
+            <h2 class="result-mode" id="result-mode">纯数字</h2>
+            <!--六个成绩格子，每格=一个数值+一个标签-->
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="result-value" id="result-time">0</div>
+                    <div class="result-label">用时</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="result-cpm">0</div>
+                    <div class="result-label">CPM</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="result-accuracy">0%</div>
+                    <div class="result-label">准确率</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="result-total">0</div>
+                    <div class="result-label">总键数</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="result-correct">0</div>
+                    <div class="result-label">对键数</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="result-wrong">0</div>
+                    <div class="result-label">打错次数</div>
+                </div>
+            </div>
+            <!--再来一局：点它关掉成绩界面并开始新题-->
+            <button id="again-btn">再来一局</button>
+        </div>
+    </div>
     <script src="script.js"></script>
     <!--把JS脚本引进来，打字逻辑都在里面-->
 </body>

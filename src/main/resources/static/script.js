@@ -20,6 +20,15 @@ const restartBtn = document.getElementById('restart-btn');  //重新生成按钮
 const btnDigits = document.getElementById('btn-digits');    //难度按钮：纯数字
 const btnSymbols = document.getElementById('btn-symbols');  //难度按钮：纯符号
 const btnMixed = document.getElementById('btn-mixed');    //难度按钮：混合
+const overlayEl=document.getElementById('result-overlay');  //成绩界面(整块)
+const resultMode=document.getElementById('result-mode');  //难度文字
+const resultTime = document.getElementById('result-time'); //用时
+const resultCpm = document.getElementById('result-cpm');  //CPM
+const resultAccuracy = document.getElementById('result-accuracy'); //准确率
+const resultTotal = document.getElementById('result-total'); //总键数
+const resultCorrect = document.getElementById('result-correct'); //对键数
+const resultWrong = document.getElementById('result-wrong'); //打错次数
+const againBtn = document.getElementById('again-btn'); //再来一局按钮
 
 //从pool里随机挑一个字符
 function randomChar(pool){
@@ -72,6 +81,7 @@ function updateHighlight(){
 
 //处理一次按键
 function handleKey(e) {
+    if(overlayEl.classList.contains('show'))return; //成绩界面开着时，打字区不吃按键
     //忽略带Ctrl/Alt/Meta的组合键，只处理普通字符
     if(e.ctrlKey ||e.metaKey||e.altKey)return;
     //如果挂着打错的字，只能按退格删掉它，其他键一律不管
@@ -92,13 +102,9 @@ function handleKey(e) {
         correctKeys++;             //对了，对键数加1
         cursor++;                  //对了:光标前进一格
         updateHighlight();
-        if(cursor===target.length){              //全部打完了，记录这局的成绩
-            const timeMs=Date.now()-roundStart;  //用了多久
-            const sec = (timeMs /1000).toFixed(1); //换算成秒，保留一位小数
-            const cpm = Math.round(target.length / (timeMs/60000)); //每分钟多少字
-            const accuracy = Math.round(correctKeys/totalKeys*100);  //准确率（百分数）
-            roundResults.push({mode:mode,timeMs:timeMs,cpm:cpm,accuracy:accuracy,time:new Date().toISOString()});
-            statusEl.textContent = '完成！用时 '+sec+' 秒 · CPM '+cpm+' ·准确率 '+accuracy+' %';
+        if(cursor===target.length){              //全部打完了:弹成绩界面
+            statusEl.textContent = '完成';
+            showResult();
         }else{
             statusEl.textContent = "对了，继续";
         }
@@ -137,10 +143,45 @@ function setMode(newMode){
     }
     restart();
 }
+
+//把mode英文名翻译成中文，显示在卡片最上面
+function modeName(m){
+    if(m==='digits')return '纯数字';
+    if(m==='symbols')return '纯符号';
+    return '混合';
+}
+
+//一局打完：算成绩、存档、填进卡片、显示出来
+function showResult(){
+    const timeMs=Date.now()-roundStart;            //这局用了多少毫秒
+    const sec=(timeMs/1000).toFixed(1);              //换成秒，保留一位小数
+    const cpm=Math.round(target.length / (timeMs/60000)); //每分钟打多少字
+    const accuracy = Math.round(correctKeys/totalKeys*100); //准确率
+    const wrongCount = totalKeys-correctKeys;      //打错次数=总键数-对键数
+    //把这局成绩存档，以后喂AI分析
+    roundResults.push({mode:mode,timeMs:timeMs,cpm:cpm,accuracy:accuracy,time:new Date().toISOString()});
+    //填进成绩卡片
+    resultMode.textContent = modeName(mode); //难度放最上面
+    resultTime.textContent =sec +' 秒';
+    resultCpm.textContent = cpm;
+    resultAccuracy.textContent = accuracy + ' %';
+    resultTotal.textContent = totalKeys;
+    resultCorrect.textContent = correctKeys;
+    resultWrong.textContent = wrongCount;
+    
+    overlayEl.classList.add('show'); //把成绩界面显示出来
+}
+
 //三个难度按钮：点哪个就切到哪个难度
 btnDigits.addEventListener('click',function() { setMode('digits');});
 btnSymbols.addEventListener('click',function(){ setMode('symbols');});
 btnMixed.addEventListener('click',function(){ setMode('mixed');});
+
+//再来一局：关掉成绩界面，直接开一道新题
+againBtn.addEventListener('click',function(){
+    overlayEl.classList.remove('show');   //先关掉成绩界面
+    restart();                            //再开新题
+})
 
 //把事件连起来：
 //1.打字区收到按键->交给handleKey
