@@ -31,8 +31,12 @@
         <!--p是段落文本-->
         <p class="status" id="status">第一步：先能打字，判错和计分下一步加</p>
         <!--这行文字以后会被JS动态改写，用来显示状态-->
-        <button id="restart-btn">重新生成</button>
-        <!--button是按钮，点击触发JS-->
+        <!--一排操作按钮：重新生成+历史成绩-->
+        <div class="actions">
+            <button id="restart-btn">重新生成</button>
+            <button id="history-btn">历史成绩</button>
+        </div>
+        
     </div>
     <!--成绩界面：默认藏起来，打完一局后JS把它显示出来-->
     <div class="overlay" id="result-overlay">
@@ -69,6 +73,35 @@
             </div>
             <!--再来一局：点它关掉成绩界面并开始新题-->
             <button id="again-btn">再来一局</button>
+        </div>
+    </div>
+    <!--历史成绩界面:先藏起来，点"历史成绩"按钮才显示-->
+    <div class="overlay" id="history-overlay">
+        <!--卡片比成绩卡宽一点，因为表格列多-->
+        <div class="result-card history-card">
+            <h2 class="result-mode">历史成绩</h2>
+            <!--空提示:还没有成绩时显示-->
+            <p class="history-empty" id="history-empty">还没有成绩，先去打一局吧</p>
+            <!--表格：每次成绩占一行-->
+            <table class="history-table" id="history-table">
+                <!--表头:说明每列是什么-->
+                <thead>
+                    <tr>
+                        <th>难度</th>
+                        <th>用时</th>
+                        <th>CPM</th>
+                        <th>准确率</th>
+                        <th>总键数</th>
+                        <th>对键数</th>
+                        <th>打错</th>
+                        <th>完成时间</th>
+                    </tr>
+                </thead>
+                <!--内容区：JS会把每次成绩做成一行塞进来-->
+                <tbody id="history-rows"></tbody>
+            </table>
+            <!--关闭按钮:点它回到打字界面-->
+            <button id="history-close-btn">关闭</button>
         </div>
     </div>
     <script src="script.js"></script>

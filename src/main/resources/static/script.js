@@ -29,6 +29,12 @@ const resultTotal = document.getElementById('result-total'); //总键数
 const resultCorrect = document.getElementById('result-correct'); //对键数
 const resultWrong = document.getElementById('result-wrong'); //打错次数
 const againBtn = document.getElementById('again-btn'); //再来一局按钮
+const historyOverlay=document.getElementById('history-overlay');  //历史成绩界面(整块)
+const historyBtn = document.getElementById('history-btn');  //历史成绩按钮
+const historyRows = document.getElementById('history-rows'); //表格内容区
+const historyEmpty = document.getElementById('history-empty'); //"还没有成绩"提示
+const historyTable = document.getElementById('history-table'); //表格整体
+const historyCloseBtn = document.getElementById('history-close-btn'); //关闭按钮
 
 //从pool里随机挑一个字符
 function randomChar(pool){
@@ -81,7 +87,7 @@ function updateHighlight(){
 
 //处理一次按键
 function handleKey(e) {
-    if(overlayEl.classList.contains('show'))return; //成绩界面开着时，打字区不吃按键
+    if(overlayEl.classList.contains('show')||historyOverlay.classList.contains('show'))return; //成绩界面或历史界面开着时，打字区不吃按键
     //忽略带Ctrl/Alt/Meta的组合键，只处理普通字符
     if(e.ctrlKey ||e.metaKey||e.altKey)return;
     //如果挂着打错的字，只能按退格删掉它，其他键一律不管
@@ -159,7 +165,7 @@ function showResult(){
     const accuracy = Math.round(correctKeys/totalKeys*100); //准确率
     const wrongCount = totalKeys-correctKeys;      //打错次数=总键数-对键数
     //把这局成绩存档，以后喂AI分析
-    roundResults.push({mode:mode,timeMs:timeMs,cpm:cpm,accuracy:accuracy,time:new Date().toISOString()});
+    roundResults.push({mode:mode,timeMs:timeMs,cpm:cpm,accuracy:accuracy,totalKeys:totalKeys,correctKeys:correctKeys,time:new Date().toISOString()});
     //填进成绩卡片
     resultMode.textContent = modeName(mode); //难度放最上面
     resultTime.textContent =sec +' 秒';
@@ -172,6 +178,64 @@ function showResult(){
     overlayEl.classList.add('show'); //把成绩界面显示出来
 }
 
+//历史成绩
+//造一个表格单元格<td>,把文字放进去再返回
+function cell(text){
+    const td=document.createElement('td');
+    td.textContent=text;
+    return td;
+}
+
+//两位数补零：9变成09(时间显示才整齐)
+function pad(n){
+    return n<10?'0'+n:''+n;
+}
+
+//把ISO时间字符串换成"月/日 时:分"给人看
+function formatTime(iso){
+    const d=new Date(iso);
+    return pad(d.getMonth()+1)+'/'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+}
+//注意：getMonth()从0开始数，1月返回0，所以要加一才是真正的月份
+
+//把roundResults里每条成绩，刷成表格里的一行
+function renderHistory(){
+    if(roundResults.length===0){
+        historyTable.style.display='none';    //没成绩：藏起表格
+        historyEmpty.style.display='block';   //显示"还没有成绩"
+        return;
+    }
+    historyTable.style.display='table';     //有成绩：亮出表格
+    historyEmpty.style.display='none';      //藏起空提示
+    historyRows.innerHTML='';               //先清掉旧行
+
+    for(let i=0;i<roundResults.length;i++){
+        const r=roundResults[i];                   //这一条成绩
+        const tr=document.createElement('tr');     //造一行
+        tr.appendChild(cell(modeName(r.mode)));    //难度
+        tr.appendChild(cell((r.timeMs/1000).toFixed(1)+' 秒'));  //用时
+        tr.appendChild(cell(r.cpm));               //CPM
+        tr.appendChild(cell(r.accuracy+' %'));     //准确率
+        tr.appendChild(cell(r.totalKeys));         //总键数
+        tr.appendChild(cell(r.correctKeys));       //对键数
+        tr.appendChild(cell(r.totalKeys-r.correctKeys)); //打错次数
+        tr.appendChild(cell(formatTime(r.time)));   //完成时间
+        historyRows.appendChild(tr);
+
+    }
+}
+
+//打开历史成绩面板:先刷一遍表格，再显示出来
+function openHistory(){
+    renderHistory();
+    historyOverlay.classList.add('show');
+}
+
+//关闭历史成绩画板
+function closeHistory(){
+    historyOverlay.classList.remove('show');
+}
+
 //三个难度按钮：点哪个就切到哪个难度
 btnDigits.addEventListener('click',function() { setMode('digits');});
 btnSymbols.addEventListener('click',function(){ setMode('symbols');});
@@ -182,6 +246,10 @@ againBtn.addEventListener('click',function(){
     overlayEl.classList.remove('show');   //先关掉成绩界面
     restart();                            //再开新题
 })
+
+//历史成绩：点按钮打开，点关闭收起
+historyBtn.addEventListener('click',openHistory);
+historyCloseBtn.addEventListener('click',closeHistory);
 
 //把事件连起来：
 //1.打字区收到按键->交给handleKey

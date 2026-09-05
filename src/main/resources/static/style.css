@@ -75,24 +75,30 @@ h1{
     font-size:0.85rem;
 }
 
-/*重新生成按钮*/
-#restart-btn {
-    margin-top:1.5rem;
+/*底部操作按钮区：重新生成+历史成绩 横排居中*/
+.actions{
+    display:flex;          /*横着排*/
+    justify-content:center; /*水平居中*/
+    gap:1rem;               /*按钮之间留空隙*/
+    margin-top:1.5rem;      /*和上面的状态文字隔开*/
+}
+
+/*两个操作按钮：统一外观*/
+#restart-btn,#history-btn{
     padding:0.6rem 1.5rem;
     font-size:1rem;
-    font-family:inherit;          /*继承页面字体*/
+    font-family:inherit;
     background:#89b4fa;
     color:#11111b;
-    border:none;                  /*去掉默认边框*/
+    border:none;
     border-radius:8px;
-    cursor:pointer;               /*鼠标变小手*/
+    cursor:pointer;
 }
 
-/*鼠标悬停在按钮上时*/
-#restart-btn:hover {
+/*鼠标悬停时变亮一点*/
+#restart-btn:hover,#history-btn:hover{
     background:#b4befe;
 }
-
 /*难度按钮区:；一排按钮水平居中排列*/
 .difficulty {
     display:flex;             /*横着排*/
@@ -200,5 +206,57 @@ h1{
     cursor:pointer;
 }
 #again-btn:hover{
+    background:#b4befe;
+}
+
+/*历史成绩卡片：比成绩卡片宽一点，表格列多放得下*/
+.history-card{
+    width:min(94%,760px);
+    max-height:80vh;      /*最高占屏幕高度的80%，超出就滚动*/
+    overflow-y:auto;      /*内容超高时出现滚动条*/
+
+}
+
+/*还没有成绩时的灰色提示*/
+.history-empty{
+    color:#6c7086;
+    margin-bottom:1.5rem;
+}
+
+/*表格:占满卡片宽度，相邻边框合并成一条*/
+.history-table{
+    width:100%;
+    border-collapse:collapse;       /*不然表格会变成双线*/
+    margin-bottom:1.5rem;
+}
+
+/*表头格子：主题蓝小字，下面用粗一点的线隔开*/
+.history-table th{
+    color:#89b4fa;
+    font-size:0.85rem;
+    padding:0.5rem 0.3rem;
+    border-bottom:2px solid #45475a;
+}
+
+/*内容格子:每行底下一条细线*/
+.history-table td{
+    font-size:0.9rem;
+    padding:0.45rem 0.3rem;
+    border-bottom:1px solid #45475a;
+}
+
+/*关闭按钮：主题蓝，和再来一局同风格*/
+#history-close-btn{
+    padding:0.6rem 2rem;
+    font-size:1rem;
+    font-family:inherit;
+    background:#89b4fa;
+    color:#11111b;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+#history-close-btn:hover{
     background:#b4befe;
 }
